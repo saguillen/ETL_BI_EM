@@ -1,11 +1,17 @@
 
 from sqlalchemy import create_engine
-
+from sqlalchemy.sql import text
 # Database connection details --Note: Dont do like this in production code
 def connection():
      
-     mydb = create_engine('postgresql://saguillen:Lbp0qYHxr5Mj@ep-noisy-term-13291448.us-east-2.aws.neon.tech/proyecto2db?sslmode=require')
+     mydb = create_engine('postgresql://saguillen:Lbp0qYHxr5Mj@ep-noisy-term-13291448.us-east-2.aws.neon.tech/proyecto2db?sslmode=require',future=True)
      return mydb
+
+
+def add_constraint(mydb,query):
+    with mydb.connect() as con:
+        con.execute(text(query))
+        con.commit()
 
 # As all df have 'country_code' column we use that columns to join df
 JOIN_ON_COLUMNS=['country_code']
@@ -99,5 +105,6 @@ DATOS_2017_2021_COL_DICT={
     "NHCCP40N":"TieneAnimalesCria",
     "NHCCP40P":"VehiculosNoCarro",
     "NPCFP14I":"DiagnosticoProblemasBucales",
-    "NPCFP14F":"DiagnosticoProblemasRespiratorios"
+    "NPCFP14F":"DiagnosticoProblemasRespiratorios",
+    "NPCEP5": "SEXO"
 }

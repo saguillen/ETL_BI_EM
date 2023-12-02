@@ -4,7 +4,7 @@ import pandas as pd
 import sys
 
 
-from constant import connection
+from constant import connection, add_constraint
 # Load the data based on type
 '''
 :param type: Input Storage type (db|csv) Based on type data stored in MySQL or FileSystem
@@ -13,13 +13,17 @@ from constant import connection
                             -For MySQL - table name
 '''
 
-def load(type: str, df: DataFrame, target: str):
+
+def load(type: str, df: DataFrame, target: str, constraints: list=None):
     
     try:
         # Write data on mysql database with table name
         if type=="db":
-            df.to_sql(target, con=connection(), if_exists='replace', index=False)
+            mydb = connection()
+            df.to_sql(target, con=mydb, if_exists='replace', index=False)
             print(f"Data succesfully loaded to MySQL Database !!")
+            for constraint in constraints:
+                 add_constraint(mydb,constraint)
         
         if type=="csv":
             # Write data on filesystem

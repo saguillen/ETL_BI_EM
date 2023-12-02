@@ -1,5 +1,6 @@
 from pandas import DataFrame
 import pandas as pd
+import uuid
 # Rename all the columns
 '''
 :param df: input dataframe
@@ -92,3 +93,20 @@ def recategorizer(df: DataFrame)->DataFrame:
     df.loc[df['DiagnosticoProblemasRespiratorios'] == 2, 'DiagnosticoProblemasRespiratorios'] = 0
     output_df = df.copy()
     return output_df
+
+
+def create_dimension(df: DataFrame, columns:list,name: str)->DataFrame:
+    df_dimension = df[columns]
+    df_dimension[name+'_id'] = df_dimension.apply(lambda _: uuid.uuid4(), axis=1)
+    return df_dimension
+
+def create_fact_table(ubicacion_id: DataFrame,vivienda_id: DataFrame,persona_id: DataFrame,fecha_id: DataFrame)->DataFrame:
+    df_fact = DataFrame()
+    #df_fact["tabla_hechos_id"]=df_fact.apply(lambda _: uuid.uuid4(), axis=1)
+    df_fact["ubicacion_id"]=ubicacion_id
+    df_fact["vivienda_id"]=vivienda_id
+    df_fact["persona_id"]=persona_id
+    df_fact["fecha_id"]=fecha_id
+    df_fact["fact_id"] = df_fact.apply(lambda _: uuid.uuid4(), axis=1)
+
+    return df_fact
